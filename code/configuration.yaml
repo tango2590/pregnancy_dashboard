@@ -1,0 +1,173 @@
+###########################
+### Pregnancy Dashboard ###
+###########################
+      - name: "Pregnancy Next Check"
+        state: "{{ state_attr('calendar.baby_calendar', 'start_time') | as_timestamp | timestamp_custom('%-I:%M%p on %a, %B %d') }}"
+      - name: "Pregnancy Days"
+        unit_of_measurement: 'days'
+        state: "{{ (now() - states('input_datetime.pregnancy_last_period') | as_datetime | as_local).days }}"
+      - name: "Pregnancy Days Left"
+        unit_of_measurement: 'days'
+        state: "{{ (states('input_datetime.pregnancy_due_date') | as_datetime | as_local - now()).days }}"
+      - name: "Pregnancy Weeks"
+        unit_of_measurement: 'weeks'
+        state: "{{ states('sensor.pregnancy_days') | int // 7 }}"
+        availability: "{{ states('sensor.pregnancy_days') | is_number }}"
+        attributes:
+          days_in_week: "{{ states('sensor.pregnancy_days') | int % 7 }}"
+        # This attribute purposfully calculates day of the week between 0 and 6, following U.S. healthcare standards.
+      - name: "Pregnancy Percent"
+        unit_of_measurement: '%'
+        state: "{{ (((states('sensor.pregnancy_days') | int)*100) / ((states('sensor.pregnancy_days') | int)+(states('sensor.pregnancy_days_left') | int))) | int }}"
+      - name: "Pregnancy Fetal Length"
+        unit_of_measurement: 'inches'
+        state: >-
+          {% set sizes = {8: '3/4',
+                          9: '1', 10: '1 1/4', 11: '1 1/2', 12: '2 1/4', 13: '3',
+                          14: '3 1/2', 15: '4', 16: '4 1/2', 17: '5', 18: '5 1/2',
+                          19: '6', 20: '10', 21: '10 1/2', 22: '11',
+                          23: '11 1/2', 24: '11 3/4', 25: '13 1/2', 26: '14', 27: '14 1/2',
+                          28: '14 3/4', 29: '15', 30: '15 3/4', 31: '16 1/4',
+                          32: '16 3/4', 33: '17 1/4', 34: '17 3/4', 35: '18 1/4',
+                          36: '18 3/4', 37: '19 1/4', 38: '19 1/2', 39: '20',
+                          40: '20 1/4' } %}
+          {{ sizes[([8, (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
+      - name: "Pregnancy Fetal Weight"
+        state: >-
+          {% set sizes = {8: '0.04 ounces',
+                          9: '0.07 ounces', 10: '0.14 ounces', 11: '1/4 ounce', 12: '1/2 ounce', 13: '3/4 ounce',
+                          14: '1 1/2 ounces', 15: '2 1/2 ounces', 16: '3 1/2 ounces', 17: '5 ounces', 18: '6 3/4 ounces',
+                          19: '8 1/2 ounces', 20: '10 1/2 ounces', 21: '12 3/4 ounces', 22: '15 ounces',
+                          23: '1 pound', 24: '1 1/4 pounds', 25: '1 1/4 pounds', 26: '1 3/4 pounds', 27: '2 pounds',
+                          28: '2 1/4 pounds', 29: '2 1/2 pounds', 30: '3 pounds', 31: '3 1/4 pounds',
+                          32: '3 3/4 pounds', 33: '4 1/3 pounds', 34: '4 3/4 pounds', 35: '5 1/4 pounds',
+                          36: '5 3/4 pounds', 37: '6 1/2 pounds', 38: '6 3/4 pounds', 39: '7 1/4 pounds',
+                          40: '7 3/4 pounds' } %}
+          {{ sizes[([8, (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
+      - name: "Pregnancy"
+        unit_of_measurement: 'Trimester'
+        state: |
+          {% set x = (states('sensor.pregnancy_weeks') | int) %}
+          {{ 'First' if x <= 12 else ( 'Second' if x <=28 else 'Third' ) }}
+        attributes:
+          days: "{{ states('sensor.pregnancy_days') }}"
+          weeks: "{{ states('sensor.pregnancy_weeks') }}"
+          months: "{{ ((states('sensor.pregnancy_days') | int) / 30.5) | round(1, 'half') }}"
+          trimester: "{{ states('sensor.pregnancy') }}"
+          percent: "{{ states('sensor.pregnancy_percent') }}"
+          fetus_size_image: "https://images.agoramedia.com/wte3.0/gcms/wbw_squares_baby_wk_{{ states('sensor.pregnancy_weeks') }}.jpg"
+          fetus_size_fruit_image: "https://images.agoramedia.com/wte3.0/gcms/wbw-{{ (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int) }}-fruit.png"
+          fetus_size_fruit: |
+            {% set sizes = { 4: 'Strawberry Seed', 5: 'Orange Seed', 6: 'Sweet Pea', 7: 'Blueberry', 8: 'Raspberry',
+                            9: 'Green Olive', 10: 'Prune', 11: 'Large Strawberry', 12: 'Lime', 13: 'Lemon',
+                            14: 'Navel Orange', 15: 'Pear', 16: 'Avocado', 17: 'Large Onion', 18: 'Cucumber',
+                            19: 'Mango', 20: 'Sweet Potato', 21: 'Large Banana', 22: 'Red Bell Pepper',
+                            23: 'Grapefruit', 24: 'Pomegranate', 25: 'Eggplant', 26: 'Acorn Squash', 27: 'Cabbage',
+                            28: 'Head of Lettuce', 29: 'Head of Cauliflower', 30: 'Bunch of Broccoli', 31: 'Coconut',
+                            32: 'Cantaloupe', 33: 'Butternut Squash', 34: 'Pineapple', 35: 'Spaghetti Squash',
+                            36: 'Bunch of Kale', 37: 'Canary Melon', 38: 'Mini Watermelon', 39: 'Honeydew Melon',
+                            40: 'Small Pumpkin', 41: 'Pumpkin', 42: 'Watermelon' } %}
+            {{ sizes[([4, (states("sensor.pregnancy_weeks")|int + states("input_number.pregnancy_size_offset")|int), 42]|sort)[1]] }}
+          fetus_size_manly_image: "https://babysizer.com/manly/{{ (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int) }}/manly-{{ (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int) }}.jpg"
+          fetus_size_manly: |
+            {% set sizes = { 4: 'a 20 grit grain on a sheet of sandpaper', 5: 'the head on a common nail.', 6: 'a 6-32 screw.', 7: 'a dose of Viagra.', 8: 'a cufflink.',
+                            9: 'a lug nut.', 10: 'a poker chip.', 11: 'a golf ball.', 12: 'a scoop of protein powder.', 13: 'a watch.',
+                            14: 'a stick shift knob.', 15: 'a travel-size deodorant.', 16: 'a duct tape cardboard roll.', 17: 'a fist bump with a newborn.', 18: 'a multi-tool.',
+                            19: 'a pair of sunglasses.', 20: 'a fat stack of cash.', 21: 'a rotary tool.', 22: 'a standard hatchet head.',
+                            23: 'a can of WD-40.', 24: 'a Philly cheesesteak.', 25: 'the body of a facehugger.', 26: 'a pair of work gloves.', 27: 'a deflated basketball.',
+                            28: 'a baseball cap.', 29: 'the skull of a T-800.', 30: '3 stacked frozen TV dinners.', 31: 'an American football.',
+                            32: 'a hard hat.', 33: 'a US size 10 boat shoe.', 34: 'a baseball glove', 35: 'a 50 lb rubber hex dumbbell.',
+                            36: 'a power drill.', 37: 'a 1980s brick phone.', 38: 'a chopped firewood log.', 39: 'a box of a dozen Krispy Kreme donuts.',
+                            40: 'a badass knights helmet.' } %}
+            {{ sizes[([4, (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
+          fetus_size_geeky_image: "https://babysizer.com/geeky/{{ (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int) }}/geeky-{{ (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int) }}.jpg"
+          fetus_size_geeky: |
+            {% set sizes = { 4: 'a DIP switch toggle.', 5: 'a Nerd.', 6: 'a Battleship peg.', 7: 'a face on a standard D20 die.', 8: 'a blue pill or a red pill. You choose.',
+                            9: 'the One Ring.', 10: 'a golden snitch.', 11: 'a LEGO minifigure.', 12: 'a Minecraft pixel.', 13: 'an arc reactor.',
+                            14: 'an original 1977 Star Wars action figure.', 15: 'SpongeBob SquarePants.', 16: 'a can of SPAM.', 17: 'the Holy Hand Grenade of Antioch.', 18: 'a baby tribble.',
+                            19: 'an adipose.', 20: 'a red Swingline stapler.', 21: 'a dragon egg.', 22: 'a Pip-Boy.',
+                            23: 'a fertility idol.', 24: 'Mr. Burns teddy bear, Bobo.', 25: 'the head of Thors hammer.', 26: 'poor Yorik. A fellow of infinite jest, of most excellent fancy.', 27: 'a pork pie hat.',
+                            28: 'a Nintendo.', 29: 'Gizmo.', 30: 'Kon.', 31: 'a Compsognathus.',
+                            32: 'a deerstalker hat.', 33: 'a fanny pack.', 34: 'Tim.', 35: 'BMO.',
+                            36: 'a 2L bottle of Mountain Dew.', 37: 'a 1980s brick phone.', 38: 'an Oscar statuette.', 39: 'the body of a 4/4 violin.',
+                            40: 'Pikachu.' } %}
+            {{ sizes[([4, (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
+          fetus_size_cravings_image: "https://babysizer.com/cravings/{{ (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int) }}/cravings-{{ (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int) }}.jpg"
+          fetus_size_cravings: |
+            {% set sizes = { 4: 'a grain of table salt.', 5: 'a Pop Rocks crystal.', 6: 'a rainbow sprinkle.', 7: 'a Tic Tac.', 8: 'a peanut M&M.',
+                            9: 'a tater tot.', 10: 'a Ferrero Rocher.', 11: 'a donut hole.', 12: 'a chicken nugget.', 13: 'a scoop of ice cream.',
+                            14: 'an 8 oz filet mignon.', 15: 'a cinnamon roll.', 16: 'a can of pop, soda, soft drink, coke, or whatever you call it.', 17: 'a large order of fries.', 18: 'a tall, decaf, non-fat, Frappuccino with whipped cream and caramel drizzle.',
+                            19: 'a hot dog.', 20: 'root beer.', 21: 'a Chipotle burrito.', 22: 'a bag of half a dozen bagels.',
+                            23: 'a box of Mac & Cheese.', 24: 'a package of Oreos.', 25: 'a popped bag of microwave popcorn.', 26: 'a Double Gulp cup.', 27: 'a big bottle of Sriracha.',
+                            28: 'a 1 pound basket of wings.', 29: 'a 1 gallon jug of milk.', 30: 'half of a large cheesecake from Cheesecake Factory.', 31: 'an 11 lb (5 kg) jar of Nutella.',
+                            32: 'a mega Chupa Chups lollipop.', 33: 'a store-bought loaf of sliced bread.', 34: 'a large bag of potato chips.', 35: 'a carton of one dozen eggs.',
+                            36: 'a footlong sub.', 37: 'half a medium pizza.', 38: 'a bucket of fried chicken.', 39: 'a full rack of pork back ribs.',
+                            40: 'a 15 lb Thanksgiving turkey.' } %}
+            {{ sizes[([4, (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
+          fetus_size_dude_dad: |
+            {% set sizes = { 4: 'a BB.', 5: 'a match head.', 6: 'a kernel of popcorn.', 7: 'a cheerio.', 8: 'a 10mm socket.',
+                            9: 'a guitar pick.', 10: 'a lug nut.', 11: 'a condom.', 12: 'a jumbo marshmallow.', 13: 'a baseball.',
+                            14: 'a tape measure.', 15: 'a beer can.', 16: 'a grenade.', 17: 'a bottle of sanitizer.', 18: 'cup of coffee.',
+                            19: 'a fire alarm.', 20: 'fresh roll of toilet paper.', 21: 'a quart of oil.', 22: 'a pound of ground beef.',
+                            23: 'Bose noise-canceling headphones.', 24: 'concession-stand nachos.', 25: 'a bowl of Olive Garden soup and breadsticks.', 26: 'a baseball glove.', 27: 'a gallon of paint.',
+                            28: 'a milk jug.', 29: 'a human head.', 30: 'a garbage disposal', 31: 'a circular saw.',
+                            32: 'a football.', 33: 'a car battery.', 34: 'a largemouth bass.', 35: 'a bicycle helmate.',
+                            36: 'a 6lb brisket.', 37: 'a small, yippy dog.', 38: 'a Playmate lunch cooler.', 39: 'a Galápagos Penguine.',
+                            40: 'a toolbox.' } %}
+            {{ sizes[([4, (states('sensor.pregnancy_weeks')|int + states("input_number.pregnancy_size_offset")|int), 40]|sort)[1]] }}
+          what_to_expect_link: "https://www.whattoexpect.com/pregnancy/week-by-week/week-{{ states('sensor.pregnancy_weeks') }}.aspx"
+          verywellfamily_link: |
+            {% set pages =  { 1: '4158813', 2: '4158819', 3: '4158839', 4: '4158847', 5: '4158868',
+                              6: '4158911', 7: '4158916', 8: '4158920', 9: '4158922', 10: '4158926',
+                              11: '4158930', 12: '4158934', 13: '4158941', 14: '4158944', 15: '4158988',
+                              16: '4158998', 17: '4159005', 14: '4158944', 15: '4158988', 16: '4158998',
+                              17: '4159005', 18: '4159009', 19: '4159012', 20: '4159017', 21: '4159022',
+                              22: '4159032', 23: '4159036', 24: '4159040', 25: '4159047', 26: '4159097',
+                              27: '4159102', 28: '4159110', 29: '4159140', 30: '4159146', 31: '4159202',
+                              32: '4159205', 33: '4159211', 34: '4159227', 35: '4159237', 36: '4159243',
+                              37: '4159250', 38: '4159251', 39: '4159263', 40: '4159264' } %}
+            {% set x = ([1, states('sensor.pregnancy_weeks')|int, 40]|sort)[1] %}
+            https://www.verywellfamily.com/{{x|string}}-weeks-pregnant-{{pages[x]}}
+          manly_link: "https://babysizer.com/manly/{{ states('sensor.pregnancy_weeks') }}"
+          geeky_link: "https://babysizer.com/geeky/{{ states('sensor.pregnancy_weeks') }}"
+          cravings_link: "https://babysizer.com/cravings/{{ states('sensor.pregnancy_weeks') }}"
+          mayo_clinic_link: "https://www.mayoclinic.org/healthy-lifestyle/pregnancy-week-by-week/in-depth/hlv-20049471"
+          fetal_development: |
+            {% set sizes = {4: "The rapidly dividing ball of cells — now known as a blastocyst — has begun to burrow into the uterine lining (endometrium). This process is called implantation.\n\nWithin the blastocyst, the inner group of cells will become the embryo. The outer layer will give rise to part of the placenta, which will nourish your baby throughout the pregnancy.",
+                            5: "The fifth week of pregnancy, or the third week after conception, the levels of HCG hormone produced by the blastocyst quickly increase. This signals your ovaries to stop releasing eggs and produce more estrogen and progesterone. Increased levels of these hormones stop your menstrual period, often the first sign of pregnancy, and fuel the growth of the placenta.\n\nThe embryo is now made of three layers. The top layer — the ectoderm — will give rise to your baby's outermost layer of skin, central and peripheral nervous systems, eyes, and inner ears.\n\nYour baby's heart and a primitive circulatory system will form in the middle layer of cells — the mesoderm. This layer of cells will also serve as the foundation for your baby's bones, ligaments, kidneys and much of the reproductive system.\n\nThe inner layer of cells — the endoderm — is where your baby's lungs and intestines will develop.", 
+                            6: "Growth is rapid this week. Just four weeks after conception, the neural tube along your baby's back is closing. The baby's brain and spinal cord will develop from the neural tube. The heart and other organs also are starting to form.\n\nStructures necessary to the formation of the eyes and ears develop. Small buds appear that will soon become arms. Your baby's body begins to take on a C-shaped curvature.", 
+                            7: "Seven weeks into your pregnancy, or five weeks after conception, your baby's brain and face are growing. Depressions that will give rise to nostrils become visible, and the beginnings of the retinas form.\n\nLower limb buds that will become legs appear and the arm buds that sprouted last week now take on the shape of paddles.", 
+                            8: "Eight weeks into your pregnancy, or six weeks after conception, your baby's lower limb buds take on the shape of paddles. Fingers have begun to form. Small swellings outlining the future shell-shaped parts of your baby's ears develop and the eyes become obvious. The upper lip and nose have formed. The trunk and neck begin to straighten.\n\nBy the end of this week, your baby might be about 1/2 inch (11 to 14 millimeters) long from crown to rump — about half the diameter of a U.S. quarter.", 
+                            9: "In the ninth week of pregnancy, or seven weeks after conception, your baby's arms grow and elbows appear. Toes are visible and eyelids form. Your baby's head is large but still has a poorly formed chin.\n\nBy the end of this week, your baby might be a little less than 3/4 inch (16 to 18 millimeters) long from crown to rump — the diameter of a U.S. penny.", 
+                            10: "By the 10th week of pregnancy, or eight weeks after conception, your baby's head has become more round.\n\nYour baby can now bend his or her elbows. Toes and fingers lose their webbing and become longer. The eyelids and external ears continue to develop. The umbilical cord is clearly visible.", 
+                            11: "At the beginning of the 11th week of pregnancy, or the ninth week after conception, your baby's head still makes up about half of its length. However, your baby's body is about to catch up.\n\nYour baby is now officially described as a fetus. This week your baby's face is broad, the eyes widely separated, the eyelids fused and the ears low set. Buds for future teeth appear. Red blood cells are beginning to form in your baby's liver. By the end of this week, your baby's external genitalia will start developing into a penis or a clitoris and labia majora.\n\nBy now your baby might measure about 2 inches (50 millimeters) long from crown to rump — the length of the short side of a credit card — and weigh almost 1/3 ounce (8 grams).", 
+                            12: "Twelve weeks into your pregnancy, or 10 weeks after conception, your baby is sprouting fingernails. Your baby's face now has taken on a more developed profile. His or her intestines are in the abdomen.\n\nBy now your baby might be about 2 1/2 inches (61 millimeters) long from crown to rump — the length of the short side of a U.S. bill — and weigh about 1/2 ounce (14 grams).", 
+                            13: "Welcome to the 2nd Trimester! Thirteen weeks into your pregnancy, or 11 weeks after conception, your baby is beginning to make urine and release it into the surrounding amniotic fluid. Your baby also swallows some amniotic fluid.\n\nBones are beginning to harden in your baby's skeleton, especially in the skull and long bones. Your baby's skin is still thin and transparent, but it will start to thicken soon.",
+                            14: "Fourteen weeks into your pregnancy, or 12 weeks after conception, your baby's neck has become more defined. Red blood cells are forming in your baby's spleen.\n\nYour baby's sex will become apparent this week or in the coming weeks.\n\nBy now your baby might be almost 3 1/2 inches (87 millimeters) long from crown to rump and weigh about 1 1/2 ounces (45 grams).", 
+                            15: "Fifteen weeks into your pregnancy, or 13 weeks after conception, your baby is growing rapidly. Bone development continues and will soon become visible on ultrasound images. Your baby's scalp hair pattern also is forming.", 
+                            16: "Sixteen weeks into your pregnancy, or 14 weeks after conception, your baby's head is erect. His or her eyes can slowly move. The ears are close to reaching their final position. Your baby's skin is getting thicker.\n\nYour baby's limb movements are becoming coordinated and can be detected during ultrasound exams. However, these movements are still too slight to be felt by you.\n\nBy now your baby might be more than 4 1/2 inches (120 millimeters) long from crown to rump and weigh close to 4 ounces (110 grams).", 
+                            17: "Seventeen weeks into your pregnancy, or 15 weeks after conception, toenails begin developing.\n\nYour baby is becoming more active in the amniotic sac, rolling and flipping. His or her heart is pumping about 100 pints of blood each day.", 
+                            18: "Eighteen weeks into your pregnancy, or 16 weeks after conception, your baby's ears begin to stand out on the sides of his or her head. Your baby might begin to hear sounds. The eyes are beginning to face forward. Your baby's digestive system has started working.\n\nBy now your baby might be 5 1/2 inches (140 millimeters) long from crown to rump and weigh 7 ounces (200 grams).",
+                            19: "Nineteen weeks into your pregnancy, or 17 weeks after conception, growth slows.\n\nA greasy, cheeselike coating called vernix caseosa begins to cover your baby. The vernix caseosa helps protect your baby's delicate skin from abrasions, chapping and hardening that can result from exposure to amniotic fluid.\n\nFor girls, the uterus and vaginal canal are forming.", 
+                            20: "Halfway into your pregnancy, or 18 weeks after conception, you might be able to feel your baby's movements (quickening). Your baby is regularly sleeping and waking. He or she might be awakened by noises or your movements.\n\nBy now your baby might be about 6 1/3 inches (160 millimeters) long from crown to rump and weigh more than 11 ounces (320 grams).", 
+                            21: "Twenty-one weeks into your pregnancy, or 19 weeks after conception, your baby is completely covered with a fine, downy hair called lanugo. The lanugo helps hold the vernix caseosa on the skin.\n\nThe sucking reflex also is developing, enabling your baby to suck his or her thumb.", 
+                            22: "Twenty-two weeks into your pregnancy, or 20 weeks after conception, your baby's eyebrows and hair are visible. Brown fat also is forming, the site of heat production.\n\nFor boys, the testes have begun to descend.\n\nBy now your baby might be 7 1/2 inches (190 millimeters) long from crown to rump and weigh about 1 pound (460 grams).",
+                            23: "Twenty-three weeks into your pregnancy, or 21 weeks after conception, your baby begins to have rapid eye movements. Ridges also form in the palms of the hands and soles of the feet that will later create the foundation for fingerprints and footprints.\n\nYour baby might begin hiccuping, causing jerking movements.", 
+                            24: "Twenty-four weeks into your pregnancy, or 22 weeks after conception, your baby's skin is wrinkled, translucent and pink to red because of visible blood in the capillaries.\n\nBy now your baby might be about 8 inches (210 millimeters) long from crown to rump and weigh more than 1 1/3 pounds (630 grams).", 
+                            25: "Twenty-five weeks into your pregnancy, or 23 weeks after conception, your baby might be able to respond to familiar sounds, such as your voice, with movement.\n\nYour baby is spending most of his or her sleep time in rapid eye movement (REM), when the eyes move rapidly even though the eyelids are closed.", 
+                            26: "Twenty-six weeks into your pregnancy, or 24 weeks after conception, your baby's lungs are beginning to produce surfactant, the substance that allows the air sacs in the lungs to inflate — and keeps them from collapsing and sticking together when they deflate.\n\nBy now your baby might be 9 inches (230 millimeters) long from crown to rump and weigh nearly 2 pounds (820 grams).", 
+                            27: "This week marks the end of the second trimester. At 27 weeks, or 25 weeks after conception, your baby's nervous system is continuing to mature. Your baby is also gaining fat, which will help his or her skin look smoother.",
+                            28: "Welcome to the 3rd Trimester! You're approaching the finish line! Twenty-eight weeks into your pregnancy, or 26 weeks after conception, your baby's eyelids can partially open and eyelashes have formed. The central nervous system can direct rhythmic breathing movements and control body temperature.\n\nBy now your baby might be nearly 10 inches (250 millimeters) long from crown to rump and weigh nearly 2 1/4 pounds (1,000 grams).", 
+                            29: "Twenty-nine weeks into your pregnancy, or 27 weeks after conception, your baby can kick, stretch and make grasping movements.", 
+                            30: "Thirty weeks into your pregnancy, or 28 weeks after conception, your baby's eyes can open wide. Your baby might have a good head of hair by this week. Red blood cells are forming in your baby's bone marrow.\n\nBy now your baby might be more than 10 1/2 inches (270 millimeters) long from crown to rump and weigh nearly 3 pounds (1,300 grams).", 
+                            31: "Thirty-one weeks into your pregnancy, or 29 weeks after conception, your baby has finished most of his or her major development. Now it's time to gain weight — quickly.",
+                            32: "Thirty-two weeks into your pregnancy, or 30 weeks after conception, your baby's toenails are visible.\n\nThe layer of soft, downy hair that has covered your baby's skin for the past few months (lanugo) starts to fall off this week.\n\nBy now your baby might be 11 inches (280 millimeters) long from crown to rump and weigh 3 3/4 pounds (1,700 grams).", 
+                            33: "Thirty-three weeks into your pregnancy, or 31 weeks after conception, your baby's pupils can change size in response to a stimulus caused by light. His or her bones are hardening. However, the skull remains soft and flexible.", 
+                            34: "Thirty-four weeks into your pregnancy, or 32 weeks after conception, your baby's fingernails have reached his or her fingertips.\n\nBy now your baby might be nearly 12 inches (300 millimeters) long from crown to rump and weigh more than 4 1/2 pounds (2,100 grams).", 
+                            35: "Thirty-five weeks into your pregnancy, or 33 weeks after conception, your baby's skin is becoming smooth. His or her limbs have a chubby appearance.",
+                            36: "Thirty-six weeks into your pregnancy, or 34 weeks after conception, the crowded conditions inside your uterus might make it harder for your baby to give you a punch. However, you'll probably still feel lots of stretches, rolls and wiggles.", 
+                            37: "Thirty-seven weeks into your pregnancy, or 35 weeks after conception, your baby has a firm grasp.\n\nTo prepare for birth, your baby's head might start descending into your pelvis. If your baby isn't head down, your health care provider will talk to you about ways to deal with this issue.", 
+                            38: "Thirty-eight weeks into your pregnancy, or 36 weeks after conception, the circumference of your baby's head and abdomen are about the same.\n\nYour baby's toenails have reached the tips of his or her toes. Your baby has mostly shed all of his or her lanugo.\n\nBy now your baby might weigh about 6 1/2 pounds (2,900 grams).", 
+                            39: "Thirty-nine weeks into your pregnancy, or 37 weeks after conception, your baby's chest is becoming more prominent. For boys, the testes continue to descend into the scrotum. Fat is being added all over your baby's body to keep him or her warm after birth.",
+                            40: "Congratulations! At forty weeks into your pregnancy, or 38 weeks after conception, you've reach the finish line! Your baby might have a crown-to-rump length of around 14 inches (360 millimeters) and weigh 7 1/2 pounds (3,400 grams). Remember, however, that healthy babies come in different sizes.\n\nDon't be alarmed if your due date comes and goes with no signs of labor starting. Your due date is simply a calculated estimate of when your pregnancy will be 40 weeks. It does not estimate when your baby will arrive. It's normal to give birth before or after your due date." } %}
+            {{ sizes[([4, (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
