@@ -31,7 +31,7 @@ This was originally posted on a [HomeAssistant Community Post](https://community
 - Due Date: `input_datetime.pregnancy_due_date`
 - Pregnancy Offset (for twins or non-standard pregnancies): `input_number.pregnancy_size_offset`
 <br><br />
-![Dashboard](images/Dashboard.png)
+![Dashboard](images/Dashboard.jpeg)
 <br><br />
 #### Data Sources
 - [What To Expect](https://www.whattoexpect.com/)
