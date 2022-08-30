@@ -5,8 +5,9 @@ I wanted to share a pregnancy tracking setup for HomeAssistant. Originally creat
 This was originally posted on a [HomeAssistant Community Post](https://community.home-assistant.io/t/pregnancy-tracking-privately-with-tempalate-sensors/270583), but I find it much easier to post updates to code in a github repo. This repository is meant to provide you as many pieces of informaiton as possible, allowing you to limit it to what you like by simpling omiting lines of code.
 
 **Note:** For the lovelace view I ended up using [custom:text-element](https://github.com/custom-cards/text-element) and [custom:card-templater](https://github.com/gadgetchnnel/lovelace-card-templater) in order to get the image of “Fruit size” from “What to expect” to update.
-
-
+<br><br />
+![Dashboard](images/Dashboard.jpeg)
+<br><br />
 ### Sensors/Attributes Available
 - Date of Next Checkup
 - Number of days into pregnancy
@@ -30,9 +31,7 @@ This was originally posted on a [HomeAssistant Community Post](https://community
 - First Day of Last Period: `input_datetime.pregnancy_last_period`
 - Due Date: `input_datetime.pregnancy_due_date`
 - Pregnancy Offset (for twins or non-standard pregnancies): `input_number.pregnancy_size_offset`
-<br><br />
-![Dashboard](images/Dashboard.jpeg)
-<br><br />
+
 #### Data Sources
 - [What To Expect](https://www.whattoexpect.com/)
 - [Babysizer](https://babysizer.com/)
