@@ -1,6 +1,8 @@
 ###########################
 ### Pregnancy Dashboard ###
 ###########################
+template:
+  - sensor:
       - name: "Pregnancy Next Check"
         state: "{{ state_attr('calendar.baby_calendar', 'start_time') | as_timestamp | timestamp_custom('%-I:%M%p on %a, %B %d') }}"
       - name: "Pregnancy Days"
