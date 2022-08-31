@@ -1,6 +1,11 @@
 ###########################
 ### Pregnancy Dashboard ###
 ###########################
+# Code for the gallery
+sensor:
+- platform: folder
+  folder: /config/www/baby
+
 template:
   - sensor:
       - name: "Pregnancy Next Check"
