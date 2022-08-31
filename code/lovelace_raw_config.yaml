@@ -89,12 +89,13 @@
               }})
       - type: vertical-stack
         cards:
-          - type: picture
-            image: /local/ultrasound_week_8.jpeg
-            tap_action:
-              action: none
-            hold_action:
-              action: none
+          - type: custom:gallery-card
+            entities:
+              - sensor.baby
+            menu_alignment: Hidden
+            slideshow_timer: '5'
+            maximum_files_per_entity: false
+            show_reload: false
           - type: markdown
             content: >
               ## Week {{ states.sensor.pregnancy.attributes.weeks }}
