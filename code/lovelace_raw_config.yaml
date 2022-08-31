@@ -130,6 +130,7 @@
                   entity: sensor.pregnancy
                   style:
                     font-size: 20px
+                    background-color: rgba(0,0,0,.7)
                     top: 10%
                     left: 50%
                 - type: state-label
@@ -139,6 +140,7 @@
                   suffix: '!'
                   style:
                     font-size: 40px
+                    background-color: rgba(0,0,0,.7)
                     top: 30%
                     left: 50%
                 - type: state-label
@@ -148,12 +150,14 @@
                   suffix: )
                   style:
                     font-size: 30px
+                    background-color: rgba(0,0,0,.7)
                     top: 45%
                     left: 50%
                 - type: custom:text-element
                   text: The fetus is about
                   style:
-                    font-size: 16px
+                    font-size: 18px
+                    background-color: rgba(0,0,0,.7)
                     top: 80%
                     left: 50%
                 - type: state-label
@@ -161,7 +165,8 @@
                   prefix: 'the size of a '
                   attribute: fetus_size_manly
                   style:
-                    font-size: 16px
+                    font-size: 18px
+                    background-color: rgba(0,0,0,.7)
                     top: 90%
                     left: 50%
             entities:
@@ -175,6 +180,7 @@
                   entity: sensor.pregnancy
                   style:
                     font-size: 20px
+                    background-color: rgba(0,0,0,.7)
                     top: 10%
                     left: 50%
                 - type: state-label
@@ -184,6 +190,7 @@
                   suffix: '!'
                   style:
                     font-size: 40px
+                    background-color: rgba(0,0,0,.7)
                     top: 30%
                     left: 50%
                 - type: state-label
@@ -193,12 +200,14 @@
                   suffix: )
                   style:
                     font-size: 30px
+                    background-color: rgba(0,0,0,.7)
                     top: 45%
                     left: 50%
                 - type: custom:text-element
                   text: The fetus is about
                   style:
-                    font-size: 16px
+                    font-size: 18px
+                    background-color: rgba(0,0,0,.7)
                     top: 80%
                     left: 50%
                 - type: state-label
@@ -206,7 +215,8 @@
                   prefix: 'the size of a '
                   attribute: fetus_size_geeky
                   style:
-                    font-size: 16px
+                    font-size: 18px
+                    background-color: rgba(0,0,0,.7)
                     top: 90%
                     left: 50%
             entities:
@@ -222,6 +232,7 @@
                   entity: sensor.pregnancy
                   style:
                     font-size: 20px
+                    background-color: rgba(0,0,0,.7)
                     top: 10%
                     left: 50%
                 - type: state-label
@@ -231,6 +242,7 @@
                   suffix: '!'
                   style:
                     font-size: 40px
+                    background-color: rgba(0,0,0,.7)
                     top: 30%
                     left: 50%
                 - type: state-label
@@ -240,12 +252,14 @@
                   suffix: )
                   style:
                     font-size: 30px
+                    background-color: rgba(0,0,0,.7)
                     top: 45%
                     left: 50%
                 - type: custom:text-element
                   text: The fetus is about
                   style:
-                    font-size: 16px
+                    font-size: 18px
+                    background-color: rgba(0,0,0,.7)
                     top: 80%
                     left: 50%
                 - type: state-label
@@ -253,7 +267,8 @@
                   prefix: 'the size of a '
                   attribute: fetus_size_cravings
                   style:
-                    font-size: 16px
+                    font-size: 18px
+                    background-color: rgba(0,0,0,.7)
                     top: 90%
                     left: 50%
             entities:
