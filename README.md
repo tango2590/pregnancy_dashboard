@@ -4,7 +4,7 @@ I wanted to share a pregnancy tracking setup for HomeAssistant. Originally creat
 
 This was originally posted on a [HomeAssistant Community Post](https://community.home-assistant.io/t/pregnancy-tracking-privately-with-tempalate-sensors/270583), but I find it much easier to post updates to code in a github repo. This repository is meant to provide you as many pieces of informaiton as possible, allowing you to limit it to what you like by simpling omiting lines of code.
 
-***Note:** For the lovelace view, you will need to add [custom:text-element](https://github.com/custom-cards/text-element) and [custom:card-templater](https://github.com/gadgetchnnel/lovelace-card-templater) in order to get the size comparison images work correctly.*
+***Note:** For the lovelace view, you will need to add [custom:text-element](https://github.com/custom-cards/text-element), [custom:card-templater](https://github.com/gadgetchnnel/lovelace-card-templater), and [custom:gallery-card](https://github.com/TarheelGrad1998/gallery-card).*
 <br><br />
 ![Dashboard](images/Dashboard.jpeg)
 <br><br />
