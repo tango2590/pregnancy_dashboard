@@ -110,9 +110,10 @@
               - entity: input_datetime.pregnancy_due_date
                 name: Due date
               - entity: sensor.pregnancy_days
-                icon: mdi:arrow-left-circle-outline
+                name: Days Pregnant
+                icon: mdi:reproduction
               - entity: sensor.pregnancy_days_left
-                icon: mdi:arrow-right-circle-outline
+                icon: mdi:flag-checkered
               - entity: sensor.pregnancy
                 name: Pregnancy Trimester
               - entity: sensor.pregnancy_fetal_length
