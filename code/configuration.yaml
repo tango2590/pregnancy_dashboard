@@ -65,7 +65,7 @@ template:
           fetus_size_image: "https://images.agoramedia.com/wte3.0/gcms/wbw_squares_baby_wk_{{ states('sensor.pregnancy_weeks') }}.jpg"
           fetus_size_fruit_image: "https://images.agoramedia.com/wte3.0/gcms/wbw-{{ (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int) }}-fruit.png"
           fetus_size_fruit: |
-            {% set sizes = { 4: 'Strawberry Seed', 5: 'Orange Seed', 6: 'Sweet Pea', 7: 'Blueberry', 8: 'Raspberry',
+            {% set sizes = { 4: 'Poppy Seed', 5: 'Orange Seed', 6: 'Sweet Pea', 7: 'Blueberry', 8: 'Raspberry',
                             9: 'Green Olive', 10: 'Prune', 11: 'Large Strawberry', 12: 'Lime', 13: 'Lemon',
                             14: 'Navel Orange', 15: 'Pear', 16: 'Avocado', 17: 'Large Onion', 18: 'Cucumber',
                             19: 'Mango', 20: 'Sweet Potato', 21: 'Large Banana', 22: 'Red Bell Pepper',
