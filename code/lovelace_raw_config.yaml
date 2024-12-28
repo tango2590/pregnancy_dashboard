@@ -76,6 +76,9 @@
             content: >
               ## Read about week {{ states.sensor.pregnancy.state }} on:
 
+              * [BabyCenter]({{
+              states.sensor.pregnancy.attributes.babycenter_link }})
+              
               * [What To Expect]({{
               states.sensor.pregnancy.attributes.what_to_expect_link }})
 
