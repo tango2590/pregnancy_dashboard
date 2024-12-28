@@ -27,22 +27,23 @@ template:
         unit_of_measurement: '%'
         state: "{{ (((states('sensor.pregnancy_days') | int)*100) / ((states('sensor.pregnancy_days') | int)+(states('sensor.pregnancy_days_left') | int))) | int }}"
       - name: "Pregnancy Fetal Length"
-        unit_of_measurement: 'inches'
         state: |
-          {% set sizes = {8: '3/4',
-                          9: '1', 10: '1 1/4', 11: '1 1/2', 12: '2 1/4', 13: '3',
-                          14: '3 1/2', 15: '4', 16: '4 1/2', 17: '5', 18: '5 1/2',
-                          19: '6', 20: '10', 21: '10 1/2', 22: '11',
-                          23: '11 1/2', 24: '11 3/4', 25: '13 1/2', 26: '14', 27: '14 1/2',
-                          28: '14 3/4', 29: '15', 30: '15 3/4', 31: '16 1/4',
-                          32: '16 3/4', 33: '17 1/4', 34: '17 3/4', 35: '18 1/4',
-                          36: '18 3/4', 37: '19 1/4', 38: '19 1/2', 39: '20',
-                          40: '20 1/4' } %}
-          {{ sizes[([8, (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
+          {% set sizes = {
+                          4: 'Less than 3/4 inches', 5: 'Less than 3/4 inches', 6: 'Less than 3/4 inches', 7: 'Less than 3/4 inches',
+                          8: '3/4 inches', 9: '1 inch', 10: '1 1/4 inches', 11: '1 1/2 inches', 12: '2 1/4 inches', 13: '3 inches',
+                          14: '3 1/2 inches', 15: '4 inches', 16: '4 1/2 inches', 17: '5 inches', 18: '5 1/2 inches',
+                          19: '6 inches', 20: '10 inches', 21: '10 1/2 inches', 22: '11 inches',
+                          23: '11 1/2 inches', 24: '11 3/4 inches', 25: '13 1/2 inches', 26: '14 inches', 27: '14 1/2 inches',
+                          28: '14 3/4 inches', 29: '15 inches', 30: '15 3/4 inches', 31: '16 1/4 inches',
+                          32: '16 3/4 inches', 33: '17 1/4 inches', 34: '17 3/4 inches', 35: '18 1/4 inches',
+                          36: '18 3/4 inches', 37: '19 1/4 inches', 38: '19 1/2 inches', 39: '20 inches',
+                          40: '20 1/4 inches' } %}
+          {{ sizes[([4, (states('sensor.pregnancy')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
       - name: "Pregnancy Fetal Weight"
         state: |
-          {% set sizes = {8: '0.04 ounces',
-                          9: '0.07 ounces', 10: '0.14 ounces', 11: '1/4 ounce', 12: '1/2 ounce', 13: '3/4 ounce',
+          {% set sizes = {
+                          4: 'Less than 0.04 ounces', 5: 'Less than 0.04 ounces', 6: 'Less than 0.04 ounces', 7: 'Less than 0.04 ounces',
+                          8: '0.04 ounces', 9: '0.07 ounces', 10: '0.14 ounces', 11: '1/4 ounce', 12: '1/2 ounce', 13: '3/4 ounce',
                           14: '1 1/2 ounces', 15: '2 1/2 ounces', 16: '3 1/2 ounces', 17: '5 ounces', 18: '6 3/4 ounces',
                           19: '8 1/2 ounces', 20: '10 1/2 ounces', 21: '12 3/4 ounces', 22: '15 ounces',
                           23: '1 pound', 24: '1 1/4 pounds', 25: '1 1/4 pounds', 26: '1 3/4 pounds', 27: '2 pounds',
@@ -50,7 +51,7 @@ template:
                           32: '3 3/4 pounds', 33: '4 1/3 pounds', 34: '4 3/4 pounds', 35: '5 1/4 pounds',
                           36: '5 3/4 pounds', 37: '6 1/2 pounds', 38: '6 3/4 pounds', 39: '7 1/4 pounds',
                           40: '7 3/4 pounds' } %}
-          {{ sizes[([8, (states('sensor.pregnancy_weeks')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
+          {{ sizes[([4, (states('sensor.pregnancy')|int + states('input_number.pregnancy_size_offset')|int), 40]|sort)[1]] }}
       - name: "Pregnancy"
         state: "{{ states('sensor.pregnancy_days') | int // 7 }}"
         attributes:
