@@ -1,3 +1,4 @@
+# This code is for a single view of an existing dashboard.
   - theme: Backend-selected
     title: Baby
     path: baby
@@ -9,53 +10,57 @@
           - type: vertical-stack
             cards:
               - type: custom:card-templater
+                entities:
+                  - sensor.pregnancy
                 card:
                   type: picture-elements
                   image_template: >-
                     {{ states.sensor.pregnancy.attributes.fetus_size_fruit_image
                     }}
+                  tap_action:
+                    action: toggle
                   elements:
                     - type: state-label
                       entity: sensor.pregnancy
+                      attribute: trimester
+                      suffix: ' Trimester'
                       style:
                         font-size: 20px
+                        font-style: italic
                         top: 4%
                         left: 50%
                     - type: state-label
                       entity: sensor.pregnancy
                       prefix: 'It''s Week '
-                      attribute: weeks
                       suffix: '!'
                       style:
                         font-size: 40px
-                        top: 11%
-                        left: 50%
-                    - type: state-label
-                      entity: sensor.pregnancy_weeks
-                      prefix: '(Day '
-                      attribute: days_in_week
-                      suffix: )
-                      style:
-                        font-size: 20px
-                        top: 18%
-                        left: 50%
-                    - type: custom:text-element
-                      text: The fetus is about
-                      style:
-                        font-size: 16px
-                        top: 85%
+                        top: 12%
                         left: 50%
                     - type: state-label
                       entity: sensor.pregnancy
-                      prefix: 'the size of a '
-                      attribute: fetus_size_fruit
-                      suffix: '!'
+                      prefix: '(Day '
+                      attribute: day_in_week
+                      suffix: )
+                      style:
+                        font-size: 20px
+                        top: 20%
+                        left: 50%
+                    - type: custom:text-action-element
+                      text: The fetus is about
                       style:
                         font-size: 16px
                         top: 90%
                         left: 50%
-                entities:
-                  - sensor.pregnancy
+                    - type: state-label
+                      entity: sensor.pregnancy
+                      prefix: 'the size of '
+                      attribute: fetus_size_fruit
+                      suffix: '!'
+                      style:
+                        font-size: 16px
+                        top: 95%
+                        left: 50%
           - type: gauge
             name: Baby Download Status
             entity: sensor.pregnancy_percent
@@ -69,8 +74,7 @@
             unit: '%'
           - type: markdown
             content: >
-              ## Read about week {{ states.sensor.pregnancy.attributes.weeks }}
-              on:
+              ## Read about week {{ states.sensor.pregnancy.state }} on:
 
               * [What To Expect]({{
               states.sensor.pregnancy.attributes.what_to_expect_link }})
@@ -89,17 +93,16 @@
               }})
       - type: vertical-stack
         cards:
-          - type: custom:gallery-card
-            entities:
-              - sensor.baby
-            menu_alignment: Hidden
-            slideshow_timer: '5'
-            maximum_files_per_entity: false
-            show_reload: false
+          - type: picture
+            image: /local/ultrasound_week_8.jpeg
+            tap_action:
+              action: none
+            hold_action:
+              action: none
           - type: markdown
             content: >
-              ## Week {{ states.sensor.pregnancy.attributes.weeks }}
-              Developmental Milestones:
+              ## Week {{ states.sensor.pregnancy.state }} Developmental
+              Milestones:
 
               {{ states.sensor.pregnancy.attributes.fetal_development }}
           - type: entities
@@ -107,15 +110,12 @@
               - entity: sensor.pregnancy_next_check
                 icon: mdi:stethoscope
                 name: Next Checkup
-              - entity: input_datetime.pregnancy_due_date
+              - entity: sensor.pregnancy_due_date
                 name: Due date
               - entity: sensor.pregnancy_days
-                name: Days Pregnant
-                icon: mdi:reproduction
+                icon: mdi:arrow-left-circle-outline
               - entity: sensor.pregnancy_days_left
-                icon: mdi:flag-checkered
-              - entity: sensor.pregnancy
-                name: Pregnancy Trimester
+                icon: mdi:arrow-right-circle-outline
               - entity: sensor.pregnancy_fetal_length
                 icon: mdi:ruler
               - entity: sensor.pregnancy_fetal_weight
@@ -124,106 +124,104 @@
       - type: vertical-stack
         cards:
           - type: custom:card-templater
+            entities:
+              - sensor.pregnancy
             card:
               type: picture-elements
               image_template: '{{ states.sensor.pregnancy.attributes.fetus_size_manly_image }}'
               elements:
                 - type: state-label
                   entity: sensor.pregnancy
+                  attribute: trimester
+                  suffix: ' Trimester'
                   style:
                     font-size: 20px
-                    background-color: rgba(0,0,0,.7)
-                    top: 10%
+                    font-style: italic
+                    top: 8%
                     left: 50%
                 - type: state-label
                   entity: sensor.pregnancy
                   prefix: 'It''s Week '
-                  attribute: weeks
                   suffix: '!'
                   style:
                     font-size: 40px
-                    background-color: rgba(0,0,0,.7)
-                    top: 30%
-                    left: 50%
-                - type: state-label
-                  entity: sensor.pregnancy_weeks
-                  prefix: '(Day '
-                  attribute: days_in_week
-                  suffix: )
-                  style:
-                    font-size: 30px
-                    background-color: rgba(0,0,0,.7)
-                    top: 45%
-                    left: 50%
-                - type: custom:text-element
-                  text: The fetus is about
-                  style:
-                    font-size: 18px
-                    background-color: rgba(0,0,0,.7)
-                    top: 80%
+                    top: 20%
                     left: 50%
                 - type: state-label
                   entity: sensor.pregnancy
-                  prefix: 'the size of a '
+                  prefix: '(Day '
+                  attribute: day_in_week
+                  suffix: )
+                  style:
+                    font-size: 20px
+                    top: 32%
+                    left: 50%
+                - type: custom:text-action-element
+                  text: The fetus is about
+                  style:
+                    font-size: 16px
+                    top: 85%
+                    left: 50%
+                - type: state-label
+                  entity: sensor.pregnancy
+                  prefix: 'the size of '
+                  suffix: '!'
                   attribute: fetus_size_manly
                   style:
-                    font-size: 18px
-                    background-color: rgba(0,0,0,.7)
-                    top: 90%
+                    font-size: 16px
+                    top: 93%
                     left: 50%
+          - type: custom:card-templater
             entities:
               - sensor.pregnancy
-          - type: custom:card-templater
             card:
               type: picture-elements
               image_template: '{{ states.sensor.pregnancy.attributes.fetus_size_geeky_image }}'
               elements:
                 - type: state-label
                   entity: sensor.pregnancy
+                  attribute: trimester
+                  suffix: ' Trimester'
                   style:
                     font-size: 20px
-                    background-color: rgba(0,0,0,.7)
-                    top: 10%
+                    font-style: italic
+                    top: 8%
                     left: 50%
                 - type: state-label
                   entity: sensor.pregnancy
                   prefix: 'It''s Week '
-                  attribute: weeks
                   suffix: '!'
                   style:
                     font-size: 40px
-                    background-color: rgba(0,0,0,.7)
-                    top: 30%
-                    left: 50%
-                - type: state-label
-                  entity: sensor.pregnancy_weeks
-                  prefix: '(Day '
-                  attribute: days_in_week
-                  suffix: )
-                  style:
-                    font-size: 30px
-                    background-color: rgba(0,0,0,.7)
-                    top: 45%
-                    left: 50%
-                - type: custom:text-element
-                  text: The fetus is about
-                  style:
-                    font-size: 18px
-                    background-color: rgba(0,0,0,.7)
-                    top: 80%
+                    top: 20%
                     left: 50%
                 - type: state-label
                   entity: sensor.pregnancy
-                  prefix: 'the size of a '
+                  prefix: '(Day '
+                  attribute: day_in_week
+                  suffix: )
+                  style:
+                    font-size: 20px
+                    top: 32%
+                    left: 50%
+                - type: custom:text-action-element
+                  text: The fetus is about
+                  style:
+                    font-size: 16px
+                    top: 85%
+                    left: 50%
+                - type: state-label
+                  entity: sensor.pregnancy
+                  prefix: 'the size of '
+                  suffix: '!'
                   attribute: fetus_size_geeky
                   style:
-                    font-size: 18px
-                    background-color: rgba(0,0,0,.7)
-                    top: 90%
+                    font-size: 16px
+                    top: 93%
                     left: 50%
+          - type: custom:card-templater
             entities:
               - sensor.pregnancy
-          - type: custom:card-templater
             card:
               type: picture-elements
               image_template: >-
@@ -232,46 +230,42 @@
               elements:
                 - type: state-label
                   entity: sensor.pregnancy
+                  attribute: trimester
+                  suffix: ' Trimester'
                   style:
                     font-size: 20px
-                    background-color: rgba(0,0,0,.7)
-                    top: 10%
+                    font-style: italic
+                    top: 8%
                     left: 50%
                 - type: state-label
                   entity: sensor.pregnancy
                   prefix: 'It''s Week '
-                  attribute: weeks
                   suffix: '!'
                   style:
                     font-size: 40px
-                    background-color: rgba(0,0,0,.7)
-                    top: 30%
-                    left: 50%
-                - type: state-label
-                  entity: sensor.pregnancy_weeks
-                  prefix: '(Day '
-                  attribute: days_in_week
-                  suffix: )
-                  style:
-                    font-size: 30px
-                    background-color: rgba(0,0,0,.7)
-                    top: 45%
-                    left: 50%
-                - type: custom:text-element
-                  text: The fetus is about
-                  style:
-                    font-size: 18px
-                    background-color: rgba(0,0,0,.7)
-                    top: 80%
+                    top: 20%
                     left: 50%
                 - type: state-label
                   entity: sensor.pregnancy
-                  prefix: 'the size of a '
+                  prefix: '(Day '
+                  attribute: day_in_week
+                  suffix: )
+                  style:
+                    font-size: 20px
+                    top: 32%
+                    left: 50%
+                - type: custom:text-action-element
+                  text: The fetus is about
+                  style:
+                    font-size: 16px
+                    top: 85%
+                    left: 50%
+                - type: state-label
+                  entity: sensor.pregnancy
+                  prefix: 'the size of '
+                  suffix: '!'
                   attribute: fetus_size_cravings
                   style:
-                    font-size: 18px
-                    background-color: rgba(0,0,0,.7)
-                    top: 90%
+                    font-size: 16px
+                    top: 93%
                     left: 50%
-            entities:
-              - sensor.pregnancy
