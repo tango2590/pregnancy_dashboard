@@ -122,6 +122,7 @@ template:
                             36: 'a 6lb brisket.', 37: 'a small, yippy dog.', 38: 'a Playmate lunch cooler.', 39: 'a Galápagos Penguine.',
                             40: 'a toolbox.' } %}
             {{ sizes[([4, (states('sensor.pregnancy_weeks')|int + states("input_number.pregnancy_size_offset")|int), 40]|sort)[1]] }}
+          babycenter_link: "https://www.babycenter.com/pregnancy/week-by-week/{{ states('sensor.pregnancy') }}-weeks-pregnant"
           what_to_expect_link: "https://www.whattoexpect.com/pregnancy/week-by-week/week-{{ states('sensor.pregnancy_weeks') }}.aspx"
           verywellfamily_link: |
             {% set pages =  { 1: '4158813', 2: '4158819', 3: '4158839', 4: '4158847', 5: '4158868',
