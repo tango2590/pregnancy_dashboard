@@ -126,6 +126,10 @@
             title: Data
       - type: vertical-stack
         cards:
+          - type: markdown
+            content: >-
+              ### According to Dude Dad, your fetus is the size of
+              {{state_attr("sensor.pregnancy", "fetus_size_dude_dad")}}
           - type: custom:card-templater
             entities:
               - sensor.pregnancy
