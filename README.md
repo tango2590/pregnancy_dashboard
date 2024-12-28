@@ -2,9 +2,9 @@
 
 I wanted to share a pregnancy tracking setup for HomeAssistant. Originally created by [alexives](https://github.com/alexives), this project has grown exponentially while still retaining it's primary function of providing a pregnancy tracking setup that does not track and sell your information.<br>
 
-This was originally posted on a [HomeAssistant Community Post](https://community.home-assistant.io/t/pregnancy-tracking-privately-with-tempalate-sensors/270583), but I find it much easier to post updates to code in a github repo. This repository is meant to provide you as many pieces of informaiton as possible, allowing you to limit it to what you like by simpling omiting lines of code.
+This was originally posted on a [HomeAssistant Community Post](https://community.home-assistant.io/t/pregnancy-tracking-privately-with-tempalate-sensors/270583), but I find it much easier to post updates to code in a github repo. This repository is meant to provide you as many pieces of informaiton as possible, allowing you to limit it to what you like by simpling omiting lines of code or removing modules from lovelace.
 
-***Note:** For the lovelace view, you will need to add [custom:text-element](https://github.com/custom-cards/text-element), [custom:card-templater](https://github.com/gadgetchnnel/lovelace-card-templater), and [custom:gallery-card](https://github.com/TarheelGrad1998/gallery-card).*
+***Note:** For the lovelace view, you will need to add [custom:text-action-element](https://github.com/custom-cards/text-action-element), [custom:card-templater](https://github.com/gadgetchnnel/lovelace-card-templater), and [custom:gallery-card](https://github.com/TarheelGrad1998/gallery-card).* The lovelace code is a single dashboard view that can be added to an existing dashboard.
 <br><br />
 ![Dashboard](images/Dashboard.jpeg)
 <br><br />
@@ -29,10 +29,10 @@ This was originally posted on a [HomeAssistant Community Post](https://community
 
 #### Input Helpers You Will Need To Create
 - First Day of Last Period: `input_datetime.pregnancy_last_period`
-- Due Date: `input_datetime.pregnancy_due_date`
 - Pregnancy Offset (for twins or non-standard pregnancies): `input_number.pregnancy_size_offset`
 
 #### Data Sources
+- [BabyCenter](https://www.babycenter.com/)
 - [What To Expect](https://www.whattoexpect.com/)
 - [Babysizer](https://babysizer.com/)
 - [Verywell Family](https://www.verywellfamily.com/)
@@ -40,6 +40,6 @@ This was originally posted on a [HomeAssistant Community Post](https://community
 - [Dude Dad: A Dude's Guide to Baby Size Book by Taylor Calmus](https://www.dudedad.com/pages/dudes-guide-to-baby-size) 
 
 ### Contributions
-Many thanks to everybody who helped with this project, regardless of the capacity.
+Many thanks to everybody who helped with this project:
 - [alexives](https://github.com/alexives) (original creator)
 - [raphi](https://community.home-assistant.io/u/raphi/summary)
